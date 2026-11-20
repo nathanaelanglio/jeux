@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="theme-color" content="#140F22">
+<meta name="color-scheme" content="dark">
+<title>Bibliothèque de jeux</title>
+<style>
+/* Bibliothèque de jeux : direction artistique Léa, 20/11/2026.
+   Fond nuit violette commun aux jeux de la maison ; chaque carte porte la couleur de son jeu.
+   Le texte ne se pose jamais sur une photo : photo dans un cadre, texte sur aplat. */
+:root{
+  color-scheme:dark;
+  --fond:#140F22;
+  --fond-lueur:#2A1C44;
+  --carte:#221A36;
+  --carte-survol:#2B2145;
+  --filet:#3A2E58;
+  --texte:#FBF3E6;
+  --texte-doux:#CDBFE0;
+  --puce:#2F2550;
+  --encre:#1A1424;
+  --bientot:#9C8DBA;
+  --focus:#FFC93C;
+  --police:'Segoe UI Variable Display','Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(120% 60% at 50% -10%, var(--fond-lueur) 0%, rgba(42,28,68,0) 70%),
+    var(--fond);
+  background-attachment:fixed;
+  color:var(--texte);font-family:var(--police);font-size:16px;line-height:1.45;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.page{
+  max-width:1180px;margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:28px 48px;
+}
+
+/* En-tête */
+.entete{margin:4px 0 24px}
+.etiquette{
+  display:inline-block;margin:0 0 10px;padding:5px 12px;border-radius:999px;
+  background:var(--puce);color:var(--focus);
+  font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+}
+h1{margin:0;font-size:clamp(30px, 7.5vw, 46px);line-height:1.08;font-weight:800;letter-spacing:-.01em}
+h1 .trait{
+  background:linear-gradient(transparent 68%, rgba(255,166,43,.55) 68%, rgba(255,166,43,.55) 90%, transparent 90%);
+}
+.sous-titre{margin:10px 0 0;color:var(--texte-doux);font-size:16px}
+
+/* Grille : une colonne de cartes en ligne au téléphone, une étagère de cartes au-delà de 640 px */
+.etagere{list-style:none;margin:0;padding:0;display:grid;gap:14px;grid-template-columns:1fr}
+.etagere > li{display:flex;min-width:0}
+.etagere > li > .jeu{flex:1 1 auto;min-width:0}
+@media (min-width:640px){
+  .etagere{grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:20px}
+}
+
+.jeu{
+  --c:#FF8A3D;
+  position:relative;display:grid;grid-template-columns:112px minmax(0,1fr);gap:14px;align-items:stretch;
+  min-height:128px;padding:10px;border-radius:22px;
+  background:var(--carte);border:1px solid var(--filet);
+  color:inherit;text-decoration:none;
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 10px 24px rgba(0,0,0,.28);
+  transition:transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+@media (min-width:640px){
+  .jeu{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:0;padding:0;overflow:hidden;min-height:0}
+}
+a.jeu:hover{background:var(--carte-survol);border-color:var(--c);box-shadow:0 0 0 1px var(--c), 0 16px 32px rgba(0,0,0,.35)}
+a.jeu:active{transform:scale(.98)}
+a.jeu:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+/* Cadre photo : carré au téléphone, 4:3 sur l'étagère. Repli coloré tant que la photo manque. */
+.cadre{
+  position:relative;align-self:start;aspect-ratio:1/1;max-width:100%;border-radius:15px;overflow:hidden;
+  background:linear-gradient(145deg, var(--c) 0%, var(--fond-lueur) 100%);
+}
+@media (min-width:640px){.cadre{aspect-ratio:4/3;border-radius:0}}
+.cadre img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cadre .initiale{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-size:44px;font-weight:800;color:var(--encre);opacity:.55;
+}
+.cadre.avec-photo .initiale{display:none}
+.cadre::after{ /* liseré de couleur du jeu, bas du cadre */
+  content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--c);
+}
+
+.corps{display:flex;flex-direction:column;min-width:0;padding:4px 4px 2px 0}
+@media (min-width:640px){.corps{padding:16px 18px 18px}}
+.titre{margin:0;font-size:19px;line-height:1.2;font-weight:800}
+@media (min-width:640px){.titre{font-size:21px}}
+.phrase{margin:5px 0 0;color:var(--texte-doux);font-size:15px;line-height:1.4}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none}
+.meta li{
+  padding:3px 10px;border-radius:999px;background:var(--puce);
+  color:var(--texte-doux);font-size:13px;font-weight:600;white-space:nowrap;
+}
+.action{margin-top:auto;padding-top:12px;display:flex}
+.jouer{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 16px;border-radius:999px;background:var(--c);color:var(--encre);
+  font-size:15px;font-weight:800;
+}
+.jouer svg{width:16px;height:16px}
+.statut{
+  display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;
+  border:1px dashed var(--bientot);color:var(--texte-doux);font-size:14px;font-weight:700;
+}
+
+/* Jeu à venir : visible, pas cliquable */
+.jeu.bientot{cursor:default;box-shadow:none}
+.jeu.bientot .cadre{filter:grayscale(.55) brightness(.75)}
+
+.pied{margin-top:36px;text-align:center;color:var(--texte-doux);font-size:13px}
+
+@media (prefers-reduced-motion:reduce){
+  .jeu{transition:none}
+  a.jeu:active{transform:none}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="entete">
+    <p class="etiquette">Ludothèque</p>
+    <h1><span class="trait">Bibliothèque</span> de jeux</h1>
+    <p class="sous-titre" id="compte">Tous les jeux, un seul lien.</p>
+  </header>
+
+  <ul class="etagere" id="etagere" aria-label="Les jeux"></ul>
+
+  <p class="pied">Montez le son : chaque jeu a sa voix et sa musique.</p>
+</main>
+
+<script>
+/* ================================================================
+   LES JEUX : ajouter un jeu = ajouter une ligne.
+   titre    : nom affiché
+   phrase   : une seule phrase
+   public   : à qui il s'adresse
+   joueurs  : nombre de joueurs
+   lien     : adresse du jeu
+   image    : photo réaliste IA, 4:3 (1440 × 1080), sujet centré
+   couleur  : couleur de la carte (reprise de l'identité du jeu)
+   bientot  : true = affiché, pas cliquable
+   ================================================================ */
+const JEUX = [
+  { titre: "Le Grand Quiz de Joël", phrase: "Le quiz biblique des équipes, animé par Joël qui lit chaque question à voix haute.", public: "Dès 5 ans", joueurs: "En équipes ou tous ensemble", lien: "https://nathanaelanglio.github.io/quiz-biblique/", image: "images/grand-quiz-de-joel.jpg", couleur: "#FFD23F", bientot: false },
+  { titre: "Ti-kozé", phrase: "Apprendre le créole martiniquais en jouant, avec Mamie ou Papi pour guide.", public: "", joueurs: "", lien: "https://nathanaelanglio.github.io/ti-koze/", image: "images/ti-koze.jpg", couleur: "#12B5A9", bientot: false },
+  { titre: "Loup dans la bergerie", phrase: "L'Undercover biblique entre amis : trouvez l'intrus, chacun sur son téléphone.", public: "Entre amis", joueurs: "3 à 12 joueurs", lien: "https://nathanaelanglio.github.io/loup-dans-la-bergerie/", image: "images/loup-dans-la-bergerie.jpg", couleur: "#FF8A3D", bientot: false },
+];
+
+/* ---------------- Construction de la page ---------------- */
+(function () {
+  'use strict';
+  const etagere = document.getElementById('etagere');
+  const fleche = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  const echap = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  /* Les jeux jouables d'abord, ceux à venir ensuite ; l'ordre du tableau est gardé dans chaque groupe. */
+  const liste = JEUX.filter(j => !j.bientot).concat(JEUX.filter(j => j.bientot));
+
+  liste.forEach(j => {
+    const li = document.createElement('li');
+    const carte = document.createElement(j.bientot ? 'div' : 'a');
+    carte.className = 'jeu' + (j.bientot ? ' bientot' : '');
+    if (j.couleur) carte.style.setProperty('--c', j.couleur);
+    if (j.bientot) {
+      carte.setAttribute('aria-disabled', 'true');
+    } else {
+      carte.href = j.lien;
+      carte.setAttribute('aria-label', 'Jouer à ' + j.titre);
+    }
+    const meta = [j.public, j.joueurs].filter(Boolean).map(m => '<li>' + echap(m) + '</li>').join('');
+    carte.innerHTML =
+      '<div class="cadre"><span class="initiale" aria-hidden="true">' + echap((j.titre.replace(/^(Le |La |Les |L\')/, '')[0] || '').toUpperCase()) + '</span></div>' +
+      '<div class="corps">' +
+        '<h2 class="titre">' + echap(j.titre) + '</h2>' +
+        '<p class="phrase">' + echap(j.phrase) + '</p>' +
+        (meta ? '<ul class="meta">' + meta + '</ul>' : '') +
+        '<div class="action">' + (j.bientot ? '<span class="statut">Bientôt</span>' : '<span class="jouer">Jouer ' + fleche + '</span>') + '</div>' +
+      '</div>';
+    if (j.image) {
+      const img = new Image();
+      img.alt = ''; img.decoding = 'async'; img.loading = 'lazy';
+      img.onload = () => carte.querySelector('.cadre').classList.add('avec-photo');
+      img.onerror = () => img.remove();
+      img.src = j.image;
+      carte.querySelector('.cadre').appendChild(img);
+    }
+    li.appendChild(carte);
+    etagere.appendChild(li);
+  });
+
+  const n = JEUX.filter(j => !j.bientot).length, b = JEUX.length - n;
+  document.getElementById('compte').textContent =
+    n + (n > 1 ? ' jeux' : ' jeu') + (b ? ', ' + b + ' bientôt' : '') + '. Touchez un jeu pour y jouer.';
+
+  /* ---------------- Son de clic : celui de Loup dans la bergerie, gain 0,18 (Milo) ----------------
+     Web Audio, déverrouillé au premier toucher. Le fichier est chargé dès l'ouverture,
+     décodé au premier toucher, et la navigation attend le son (150 ms) pour ne pas le couper. */
+  const GAIN_CLIC = 0.18;
+  let ctx = null, tampon = null, decodage = null;
+  const brut = fetch('sons/clic.mp3').then(r => r.ok ? r.arrayBuffer() : null).catch(() => null);
+  function initAudio() {
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    ctx = new AC();
+    decodage = brut.then(b => b ? new Promise((ok, ko) => ctx.decodeAudioData(b, ok, ko)) : null)
+      .then(t => { tampon = t; }).catch(() => { });
+  }
+  document.addEventListener('pointerdown', initAudio, { capture: true });
+  document.addEventListener('keydown', initAudio, { capture: true });
+  function jouerClic() {
+    if (!ctx || !tampon) return false;
+    const src = ctx.createBufferSource(); src.buffer = tampon;
+    const g = ctx.createGain(); g.gain.value = GAIN_CLIC;
+    src.connect(g).connect(ctx.destination);
+    src.start();
+    return true;
+  }
+  const attendre = ms => new Promise(r => setTimeout(r, ms));
+  etagere.addEventListener('click', e => {
+    const a = e.target.closest('a.jeu'); if (!a) return;
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; /* nouvel onglet : on laisse faire */
+    e.preventDefault();
+    initAudio();
+    Promise.race([decodage || Promise.resolve(), attendre(250)])
+      .then(() => jouerClic() ? attendre(150) : null)
+      .then(() => { window.location.href = a.href; });
+  });
+})();
+</script>
+</body>
+</html>
